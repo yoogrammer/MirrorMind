@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorMind — Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@200;300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Outfit', 'sans-serif'] },
+                    colors: { obsidian: '#0b0d17', charcoal: '#151a24', neoncyan: '#00f0ff', neonpurple: '#bd00ff', neonamber: '#ffb800' }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #00f0ff;
+        }
+
+        /* Toggle Switch */
+        .toggle-track {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-track input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            transition: 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-slider:before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 4px;
+            top: 3px;
+            background: #64748b;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked+.toggle-slider {
+            background: rgba(0, 240, 255, 0.2);
+            border-color: rgba(0, 240, 255, 0.4);
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(20px);
+            background: #00f0ff;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        }
+
+        /* Range Slider */
+        .range-input {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            outline: none;
+        }
+
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #00f0ff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Section separator */
+        .settings-section {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide {
+            animation: slide-in 0.4s ease both;
+        }
+    </style>
+</head>
+
+<body class="bg-obsidian text-white min-h-screen font-sans antialiased">
+
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="absolute bottom-[10%] left-[10%] w-[40%] h-[40%] rounded-full bg-neonpurple/6 blur-[130px]"></div>
+        <div class="absolute top-[5%] right-[5%] w-[30%] h-[30%] rounded-full bg-neoncyan/6 blur-[100px]"></div>
+    </div>
+
+    <div class="relative z-10 flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <nav class="w-20 flex flex-col items-center py-8 gap-8 glass-panel border-r border-white/5 shrink-0">
+            <div
+                class="w-10 h-10 rounded-xl bg-gradient-to-br from-neoncyan/30 to-neonpurple/30 flex items-center justify-center border border-white/10">
+                <i class="fa-solid fa-eye text-neoncyan text-sm"></i>
+            </div>
+            <div class="flex flex-col gap-6 flex-1">
+                <a href="index.html"
+                    class="nav-link w-12 h-12 rounded-xl flex items-center justify-center hover:bg-white/5 transition-all"
+                    title="Mirror"><i class="fa-solid fa-camera-viewfinder text-lg"></i></a>
+                <a href="history.html"
+                    class="nav-link w-12 h-12 rounded-xl flex items-center justify-center hover:bg-white/5 transition-all"
+                    title="History"><i class="fa-solid fa-chart-line text-lg"></i></a>
+                <a href="analytics.html"
+                    class="nav-link w-12 h-12 rounded-xl flex items-center justify-center hover:bg-white/5 transition-all"
+                    title="Analytics"><i class="fa-solid fa-brain text-lg"></i></a>
+                <a href="settings.html"
+                    class="nav-link active w-12 h-12 rounded-xl flex items-center justify-center bg-neoncyan/10 border border-neoncyan/20"
+                    title="Settings"><i class="fa-solid fa-sliders text-neoncyan text-lg"></i></a>
+            </div>
+            <div
+                class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 text-sm border border-white/10 bg-gradient-to-br from-neoncyan/20 to-neonpurple/20">
+                R</div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden">
+
+            <!-- Settings Sidebar Menu -->
+            <div class="w-56 glass-panel border-r border-white/5 shrink-0 flex flex-col py-6 px-3 gap-1">
+                <p class="text-[10px] text-gray-600 uppercase tracking-widest px-3 mb-2">Configuration</p>
+                <button id="tab-camera" onclick="showTab('camera')"
+                    class="settings-tab-btn w-full text-left px-3 py-2.5 rounded-xl text-sm text-white bg-neoncyan/10 border border-neoncyan/20 flex items-center gap-3">
+                    <i class="fa-solid fa-camera text-neoncyan w-4"></i> Camera & Vision
+                </button>
+                <button id="tab-ai" onclick="showTab('ai')"
+                    class="settings-tab-btn w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-brain w-4"></i> AI Behavior
+                </button>
+                <button id="tab-notifications" onclick="showTab('notifications')"
+                    class="settings-tab-btn w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-bell w-4"></i> Notifications
+                </button>
+                <button id="tab-privacy" onclick="showTab('privacy')"
+                    class="settings-tab-btn w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-shield-halved w-4"></i> Privacy
+                </button>
+                <button id="tab-appearance" onclick="showTab('appearance')"
+                    class="settings-tab-btn w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-palette w-4"></i> Appearance
+                </button>
+                <button id="tab-integrations" onclick="showTab('integrations')"
+                    class="settings-tab-btn w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-plug w-4"></i> Integrations
+                </button>
+                <div class="flex-1"></div>
+                <button
+                    class="w-full text-left px-3 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-400/5 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-right-from-bracket w-4"></i> Sign Out
+                </button>
+            </div>
+
+            <!-- Settings Content Area -->
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="max-w-2xl mx-auto space-y-6">
+
+                    <!-- Camera & Vision Tab -->
+                    <div id="tab-content-camera" class="animate-slide">
+                        <h1 class="font-display text-2xl font-light tracking-wide mb-1">Camera <span
+                                class="text-neoncyan">&</span> Vision</h1>
+                        <p class="text-sm text-gray-500 mb-6">Control how MirrorMind observes and processes your
+                            environment.</p>
+
+                        <div class="glass-panel rounded-3xl p-6 mb-4">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Camera Access
+                            </h2>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Enable Camera Feed</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Allow MirrorMind to access your device
+                                        camera</p>
+                                </div>
+                                <label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Privacy Blur Mode</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Blur the camera preview in the UI (analysis
+                                        continues)</p>
+                                </div>
+                                <label class="toggle-track"><input type="checkbox"><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Record Sessions</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Store emotion session data locally for
+                                        analytics</p>
+                                </div>
+                                <label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-3xl p-6 mb-4">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Detection
+                                Settings</h2>
+                            <div class="mb-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-medium text-white">Emotion Sensitivity</p>
+                                    <span id="sensitivity-val" class="text-xs text-neoncyan font-mono">72%</span>
+                                </div>
+                                <input type="range" class="range-input" min="10" max="100" value="72"
+                                    oninput="document.getElementById('sensitivity-val').textContent=this.value+'%'">
+                                <p class="text-xs text-gray-500 mt-2">Higher sensitivity detects subtle
+                                    micro-expressions but may increase false positives.</p>
+                            </div>
+                            <div class="mb-5">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-medium text-white">Analysis Frequency</p>
+                                    <span id="freq-val" class="text-xs text-neoncyan font-mono">5 fps</span>
+                                </div>
+                                <input type="range" class="range-input" min="1" max="30" value="5"
+                                    oninput="document.getElementById('freq-val').textContent=this.value+' fps'">
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Multi-Face Mode</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Detect emotions from multiple people in
+                                        frame</p>
+                                </div>
+                                <label class="toggle-track"><input type="checkbox"><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-3xl p-6">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Camera
+                                Selection</h2>
+                            <select
+                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:outline-none focus:border-neoncyan/40 appearance-none">
+                                <option>FaceTime HD Camera (Built-in)</option>
+                                <option>Logitech C920 HD Pro</option>
+                                <option>OBS Virtual Camera</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- AI Behavior Tab (hidden by default) -->
+                    <div id="tab-content-ai" class="hidden animate-slide">
+                        <h1 class="font-display text-2xl font-light tracking-wide mb-1">AI <span
+                                class="text-neoncyan">Behavior</span></h1>
+                        <p class="text-sm text-gray-500 mb-6">Tune how MirrorMind's intelligence responds to your
+                            emotions.</p>
+                        <div class="glass-panel rounded-3xl p-6 mb-4">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Suggestion
+                                Engine</h2>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Auto-Suggestions</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Proactively offer tips without being asked
+                                    </p>
+                                </div><label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Predictive Mode</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Suggest interventions before emotional dips
+                                        (beta)</p>
+                                </div><label class="toggle-track"><input type="checkbox"><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Voice Companion</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Enable spoken AI responses via
+                                        text-to-speech</p>
+                                </div><label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="mt-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-sm font-medium text-white">AI Personality</p><span id="persona-val"
+                                        class="text-xs text-neoncyan font-mono">Supportive 60%</span>
+                                </div>
+                                <input type="range" class="range-input" min="1" max="100" value="60"
+                                    oninput="document.getElementById('persona-val').textContent='Supportive '+this.value+'%'">
+                                <div class="flex justify-between text-xs text-gray-600 mt-1">
+                                    <span>Professional</span><span>Friendly</span></div>
+                            </div>
+                        </div>
+                        <div class="glass-panel rounded-3xl p-6">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Learning</h2>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Adaptive Learning</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Improve suggestions based on your feedback
+                                    </p>
+                                </div><label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Send Anonymous Usage Data</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Help improve MirrorMind's global model</p>
+                                </div><label class="toggle-track"><input type="checkbox"><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <button
+                                class="mt-4 w-full py-2.5 rounded-xl border border-red-400/30 text-red-400 text-sm hover:bg-red-400/10 transition-colors">Reset
+                                Personalization Data</button>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Tab -->
+                    <div id="tab-content-notifications" class="hidden animate-slide">
+                        <h1 class="font-display text-2xl font-light tracking-wide mb-1"><span
+                                class="text-neoncyan">Notification</span> Preferences</h1>
+                        <p class="text-sm text-gray-500 mb-6">Control how and when MirrorMind reaches out to you.</p>
+                        <div class="glass-panel rounded-3xl p-6 mb-4">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Channels</h2>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Desktop Notifications</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">System-level popups from MirrorMind</p>
+                                </div><label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Floating HUD Alerts</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Gentle in-app suggestion cards</p>
+                                </div><label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Voice Announcements</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Spoken suggestions through your speakers</p>
+                                </div><label class="toggle-track"><input type="checkbox"><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="glass-panel rounded-3xl p-6">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Quiet Hours
+                            </h2>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-2">Start</p><input type="time" value="22:00"
+                                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 focus:outline-none focus:border-neoncyan/40">
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-2">End</p><input type="time" value="07:00"
+                                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 focus:outline-none focus:border-neoncyan/40">
+                                </div>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Smart Frequency</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Limit to max 3 suggestions per hour</p>
+                                </div><label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Tab -->
+                    <div id="tab-content-privacy" class="hidden animate-slide">
+                        <h1 class="font-display text-2xl font-light tracking-wide mb-1">Privacy <span
+                                class="text-neoncyan">&</span> Security</h1>
+                        <p class="text-sm text-gray-500 mb-6">Your emotional data stays private. Always.</p>
+                        <div class="glass-panel rounded-3xl p-6 mb-4 border border-neoncyan/10">
+                            <div class="flex items-start gap-4 mb-5">
+                                <div
+                                    class="w-10 h-10 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-lock text-green-400"></i></div>
+                                <div>
+                                    <p class="text-sm font-medium text-white">All data is processed locally</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">MirrorMind uses on-device AI. No video or
+                                        images are ever sent to external servers.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-panel rounded-3xl p-6 mb-4">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Data Controls
+                            </h2>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Local Data Storage</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Store mood history and analytics on this
+                                        device</p>
+                                </div><label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Auto-Delete After</p>
+                                </div>
+                                <select
+                                    class="bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-300 focus:outline-none">
+                                    <option>30 days</option>
+                                    <option>90 days</option>
+                                    <option>180 days</option>
+                                    <option>Never</option>
+                                </select>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-3">
+                                <button
+                                    class="py-2.5 rounded-xl border border-white/10 text-sm text-gray-400 hover:bg-white/5 transition-colors">Export
+                                    My Data</button>
+                                <button
+                                    class="py-2.5 rounded-xl border border-red-400/30 text-sm text-red-400 hover:bg-red-400/10 transition-colors">Delete
+                                    All Data</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appearance Tab -->
+                    <div id="tab-content-appearance" class="hidden animate-slide">
+                        <h1 class="font-display text-2xl font-light tracking-wide mb-1">App <span
+                                class="text-neoncyan">Appearance</span></h1>
+                        <p class="text-sm text-gray-500 mb-6">Customize the look and feel of MirrorMind.</p>
+                        <div class="glass-panel rounded-3xl p-6 mb-4">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Accent Color
+                            </h2>
+                            <div class="flex gap-3">
+                                <button class="w-8 h-8 rounded-full bg-neoncyan border-2 border-white"></button>
+                                <button class="w-8 h-8 rounded-full bg-neonpurple border-2 border-transparent"></button>
+                                <button class="w-8 h-8 rounded-full bg-neonamber border-2 border-transparent"></button>
+                                <button class="w-8 h-8 rounded-full bg-green-400 border-2 border-transparent"></button>
+                                <button class="w-8 h-8 rounded-full bg-pink-400 border-2 border-transparent"></button>
+                            </div>
+                        </div>
+                        <div class="glass-panel rounded-3xl p-6">
+                            <h2 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-4">Display
+                                Preferences</h2>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Ambient Background Glow</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Atmospheric colored lighting effects</p>
+                                </div><label class="toggle-track"><input type="checkbox" checked><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Reduced Motion</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Disable non-essential animations</p>
+                                </div><label class="toggle-track"><input type="checkbox"><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                            <div class="settings-row">
+                                <div>
+                                    <p class="text-sm font-medium text-white">Compact Mode</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Reduce padding and panel sizes</p>
+                                </div><label class="toggle-track"><input type="checkbox"><span
+                                        class="toggle-slider"></span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Integrations Tab -->
+                    <div id="tab-content-integrations" class="hidden animate-slide">
+                        <h1 class="font-display text-2xl font-light tracking-wide mb-1">App <span
+                                class="text-neoncyan">Integrations</span></h1>
+                        <p class="text-sm text-gray-500 mb-6">Connect MirrorMind with your favorite tools and devices.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="glass-panel rounded-2xl p-5 flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                                        <i class="fa-brands fa-spotify text-green-400"></i></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-white">Spotify</p>
+                                        <p class="text-xs text-gray-500">Play mood-matched music playlists</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="text-xs px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 hover:bg-green-500/20 transition-colors">Connected</button>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                                        <i class="fa-brands fa-apple text-blue-300"></i></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-white">Apple Health</p>
+                                        <p class="text-xs text-gray-500">Sync sleep, HRV, and activity data</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="text-xs px-4 py-2 rounded-xl border border-white/10 text-gray-400 hover:bg-white/5 transition-colors">Connect</button>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+                                        <i class="fa-solid fa-ring text-orange-400"></i></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-white">Oura Ring</p>
+                                        <p class="text-xs text-gray-500">Biometric integration for readiness scores</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="text-xs px-4 py-2 rounded-xl border border-white/10 text-gray-400 hover:bg-white/5 transition-colors">Connect</button>
+                            </div>
+                            <div class="glass-panel rounded-2xl p-5 flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 rounded-2xl bg-neonpurple/10 border border-neonpurple/20 flex items-center justify-center">
+                                        <i class="fa-solid fa-calendar text-neonpurple"></i></div>
+                                    <div>
+                                        <p class="text-sm font-medium text-white">Google Calendar</p>
+                                        <p class="text-xs text-gray-500">Context-aware suggestions based on your
+                                            schedule</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="text-xs px-4 py-2 rounded-xl border border-white/10 text-gray-400 hover:bg-white/5 transition-colors">Connect</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            document.querySelectorAll('[id^="tab-content-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+                btn.className = 'settings-tab-btn w-full text-left px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-3';
+                const icon = btn.querySelector('i');
+                if (icon) icon.classList.remove('text-neoncyan');
+            });
+            const content = document.getElementById('tab-content-' + tabName);
+            if (content) content.classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabName);
+            if (activeBtn) {
+                activeBtn.className = 'settings-tab-btn w-full text-left px-3 py-2.5 rounded-xl text-sm text-white bg-neoncyan/10 border border-neoncyan/20 flex items-center gap-3';
+                const icon = activeBtn.querySelector('i');
+                if (icon) icon.classList.add('text-neoncyan');
+            }
+        }
+    </script>
+</body>
+
+</html>

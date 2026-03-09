@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorMind — Mood History</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@200;300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: '#0b0d17',
+                        charcoal: '#151a24',
+                        neoncyan: '#00f0ff',
+                        neonpurple: '#bd00ff',
+                        neonamber: '#ffb800',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .heat-cell {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            transition: transform 0.2s, opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .heat-cell:hover {
+            transform: scale(1.4);
+        }
+
+        .heat-0 {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .heat-1 {
+            background: rgba(0, 240, 255, 0.15);
+        }
+
+        .heat-2 {
+            background: rgba(0, 240, 255, 0.30);
+        }
+
+        .heat-3 {
+            background: rgba(0, 240, 255, 0.50);
+        }
+
+        .heat-4 {
+            background: rgba(0, 240, 255, 0.75);
+        }
+
+        .heat-5 {
+            background: #00f0ff;
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+        }
+
+        .mood-happy {
+            color: #00f0ff;
+        }
+
+        .mood-focused {
+            color: #7c3aed;
+        }
+
+        .mood-stressed {
+            color: #f97316;
+        }
+
+        .mood-sad {
+            color: #6366f1;
+        }
+
+        .mood-neutral {
+            color: #94a3b8;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #00f0ff;
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide {
+            animation: slide-in 0.5s ease both;
+        }
+    </style>
+</head>
+
+<body class="bg-obsidian text-white min-h-screen font-sans antialiased">
+
+    <!-- Background Glows -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-[-10%] right-[5%] w-[40%] h-[40%] rounded-full bg-neonpurple/8 blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] left-[5%] w-[35%] h-[35%] rounded-full bg-neoncyan/8 blur-[100px]"></div>
+    </div>
+
+    <div class="relative z-10 flex h-screen overflow-hidden">
+
+        <!-- Sidebar Navigation -->
+        <nav class="w-20 flex flex-col items-center py-8 gap-8 glass-panel border-r border-white/5 shrink-0">
+            <div
+                class="w-10 h-10 rounded-xl bg-gradient-to-br from-neoncyan/30 to-neonpurple/30 flex items-center justify-center border border-white/10">
+                <i class="fa-solid fa-eye text-neoncyan text-sm"></i>
+            </div>
+            <div class="flex flex-col gap-6 flex-1">
+                <a href="index.html"
+                    class="nav-link w-12 h-12 rounded-xl flex items-center justify-center hover:bg-white/5 transition-all"
+                    title="Mirror">
+                    <i class="fa-solid fa-camera-viewfinder text-lg"></i>
+                </a>
+                <a href="history.html"
+                    class="nav-link active w-12 h-12 rounded-xl flex items-center justify-center bg-neoncyan/10 border border-neoncyan/20"
+                    title="History">
+                    <i class="fa-solid fa-chart-line text-neoncyan text-lg"></i>
+                </a>
+                <a href="analytics.html"
+                    class="nav-link w-12 h-12 rounded-xl flex items-center justify-center hover:bg-white/5 transition-all"
+                    title="Analytics">
+                    <i class="fa-solid fa-brain text-lg"></i>
+                </a>
+                <a href="settings.html"
+                    class="nav-link w-12 h-12 rounded-xl flex items-center justify-center hover:bg-white/5 transition-all"
+                    title="Settings">
+                    <i class="fa-solid fa-sliders text-lg"></i>
+                </a>
+            </div>
+            <a href="settings.html"
+                class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                <i class="fa-solid fa-user text-gray-400 text-sm"></i>
+            </a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+
+            <!-- Header -->
+            <header class="px-8 py-5 flex items-center justify-between border-b border-white/5 shrink-0">
+                <div>
+                    <h1 class="font-display text-2xl font-light tracking-wide">Mood <span
+                            class="text-neoncyan">History</span></h1>
+                    <p class="text-sm text-gray-500 mt-1">Emotional timeline · Last 30 days</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex glass-panel rounded-xl p-1 gap-1">
+                        <button id="btn-7"
+                            class="px-4 py-1.5 rounded-lg text-xs font-medium bg-neoncyan/20 text-neoncyan">7D</button>
+                        <button id="btn-30"
+                            class="px-4 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all">30D</button>
+                        <button id="btn-90"
+                            class="px-4 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all">90D</button>
+                    </div>
+                    <button
+                        class="glass-panel rounded-xl px-4 py-2 text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> Export
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Grid -->
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="max-w-7xl mx-auto space-y-6">
+
+                    <!-- Top Stats Row -->
+                    <div class="grid grid-cols-4 gap-4 animate-slide" style="animation-delay:0.05s">
+                        <div class="glass-panel rounded-2xl p-5 border border-neoncyan/10">
+                            <p class="text-xs text-gray-500 mb-1">Dominant Mood</p>
+                            <p class="font-display text-2xl font-light text-neoncyan">Focused</p>
+                            <p class="text-xs text-gray-500 mt-2">47% of time this week</p>
+                        </div>
+                        <div class="glass-panel rounded-2xl p-5 border border-white/5">
+                            <p class="text-xs text-gray-500 mb-1">Wellbeing Score</p>
+                            <p class="font-display text-2xl font-light text-white">84<span
+                                    class="text-sm text-gray-400">/100</span></p>
+                            <p class="text-xs text-green-400 mt-2 flex items-center gap-1"><i
+                                    class="fa-solid fa-arrow-up text-[10px]"></i>+6 from last week</p>
+                        </div>
+                        <div class="glass-panel rounded-2xl p-5 border border-white/5">
+                            <p class="text-xs text-gray-500 mb-1">Stress Events</p>
+                            <p class="font-display text-2xl font-light text-orange-400">3</p>
+                            <p class="text-xs text-gray-500 mt-2">Avg duration: 18 min</p>
+                        </div>
+                        <div class="glass-panel rounded-2xl p-5 border border-white/5">
+                            <p class="text-xs text-gray-500 mb-1">Focus Sessions</p>
+                            <p class="font-display text-2xl font-light text-white">12</p>
+                            <p class="text-xs text-gray-500 mt-2">Total: 14.5 hours</p>
+                        </div>
+                    </div>
+
+                    <!-- Main Chart -->
+                    <div class="glass-panel rounded-3xl p-6 animate-slide" style="animation-delay:0.1s">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="font-display text-sm text-gray-300 uppercase tracking-widest">Emotional Trend · 7
+                                Days</h2>
+                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                <span class="flex items-center gap-1.5"><span
+                                        class="inline-block w-3 h-0.5 bg-neoncyan rounded"></span>Focused</span>
+                                <span class="flex items-center gap-1.5"><span
+                                        class="inline-block w-3 h-0.5 bg-purple-500 rounded"></span>Relaxed</span>
+                                <span class="flex items-center gap-1.5"><span
+                                        class="inline-block w-3 h-0.5 bg-orange-400 rounded"></span>Stressed</span>
+                            </div>
+                        </div>
+                        <div class="h-56">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Two Column: Calendar + Daily Breakdown -->
+                    <div class="grid grid-cols-5 gap-4">
+
+                        <!-- Heatmap Calendar -->
+                        <div class="col-span-3 glass-panel rounded-3xl p-6 animate-slide" style="animation-delay:0.15s">
+                            <div class="flex items-center justify-between mb-5">
+                                <h2 class="font-display text-sm text-gray-300 uppercase tracking-widest">30-Day Mood
+                                    Heatmap</h2>
+                                <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                                    <span>Low</span>
+                                    <div class="flex gap-1">
+                                        <div class="heat-cell heat-0"></div>
+                                        <div class="heat-cell heat-1"></div>
+                                        <div class="heat-cell heat-2"></div>
+                                        <div class="heat-cell heat-3"></div>
+                                        <div class="heat-cell heat-5"></div>
+                                    </div>
+                                    <span>High</span>
+                                </div>
+                            </div>
+                            <!-- Day labels -->
+                            <div class="flex gap-2 mb-2 ml-1 text-[10px] text-gray-600">
+                                <span class="w-14">Mon</span><span class="w-14">Tue</span><span
+                                    class="w-14">Wed</span><span class="w-14">Thu</span><span
+                                    class="w-14">Fri</span><span class="w-14">Sat</span><span class="w-14">Sun</span>
+                            </div>
+                            <div id="heatmap" class="flex flex-wrap gap-1.5"></div>
+                        </div>
+
+                        <!-- Daily Breakdown -->
+                        <div class="col-span-2 glass-panel rounded-3xl p-6 animate-slide" style="animation-delay:0.2s">
+                            <h2 class="font-display text-sm text-gray-300 uppercase tracking-widest mb-5">Today's
+                                Timeline</h2>
+                            <div class="space-y-3 overflow-y-auto max-h-48 pr-1 custom-scrollbar">
+                                <div class="flex items-start gap-3">
+                                    <div class="mt-0.5 w-2 h-2 rounded-full bg-neoncyan shrink-0"></div>
+                                    <div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs font-medium text-white">Focused</span>
+                                            <span class="text-[10px] text-gray-500">9:00–11:45 AM</span>
+                                        </div>
+                                        <div class="w-full bg-white/5 rounded-full h-1 mt-1.5">
+                                            <div class="bg-neoncyan h-1 rounded-full" style="width:92%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="mt-0.5 w-2 h-2 rounded-full bg-orange-400 shrink-0"></div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs font-medium text-white">Stressed</span>
+                                            <span class="text-[10px] text-gray-500">11:45–12:10 PM</span>
+                                        </div>
+                                        <div class="w-full bg-white/5 rounded-full h-1 mt-1.5">
+                                            <div class="bg-orange-400 h-1 rounded-full" style="width:60%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="mt-0.5 w-2 h-2 rounded-full bg-gray-400 shrink-0"></div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs font-medium text-white">Neutral</span>
+                                            <span class="text-[10px] text-gray-500">12:10–1:30 PM</span>
+                                        </div>
+                                        <div class="w-full bg-white/5 rounded-full h-1 mt-1.5">
+                                            <div class="bg-gray-400 h-1 rounded-full" style="width:45%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="mt-0.5 w-2 h-2 rounded-full bg-purple-400 shrink-0"></div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs font-medium text-white">Relaxed</span>
+                                            <span class="text-[10px] text-gray-500">1:30–2:30 PM</span>
+                                        </div>
+                                        <div class="w-full bg-white/5 rounded-full h-1 mt-1.5">
+                                            <div class="bg-purple-400 h-1 rounded-full" style="width:78%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="mt-0.5 w-2 h-2 rounded-full bg-neoncyan shrink-0"></div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-xs font-medium text-white">Focused</span>
+                                            <span class="text-[10px] text-gray-500">2:30–5:00 PM</span>
+                                        </div>
+                                        <div class="w-full bg-white/5 rounded-full h-1 mt-1.5">
+                                            <div class="bg-neoncyan h-1 rounded-full" style="width:88%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 pt-5 border-t border-white/5">
+                                <h3 class="font-display text-xs text-gray-400 uppercase tracking-widest mb-3">AI
+                                    Insights</h3>
+                                <p class="text-xs text-gray-400 leading-relaxed">Your focus peaks between <span
+                                        class="text-neoncyan">9–11 AM</span>. Consider scheduling deep work tasks in
+                                    this window. Stress spikes correlate with pre-lunch hours — try a micro-meditation
+                                    at 11:30.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row: Mood Donut + Weekly Patterns -->
+                    <div class="grid grid-cols-3 gap-4 animate-slide" style="animation-delay:0.25s">
+                        <div class="glass-panel rounded-3xl p-6">
+                            <h2 class="font-display text-sm text-gray-300 uppercase tracking-widest mb-5">Mood
+                                Distribution</h2>
+                            <div class="h-44 relative">
+                                <canvas id="donutChart"></canvas>
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div class="text-center">
+                                        <div class="font-display text-2xl font-light text-white">84%</div>
+                                        <div class="text-xs text-gray-500">Positive</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 mt-4">
+                                <div class="flex items-center gap-2 text-xs"><span
+                                        class="w-2 h-2 rounded-full bg-neoncyan inline-block"></span><span
+                                        class="text-gray-400">Focused 47%</span></div>
+                                <div class="flex items-center gap-2 text-xs"><span
+                                        class="w-2 h-2 rounded-full bg-purple-400 inline-block"></span><span
+                                        class="text-gray-400">Relaxed 21%</span></div>
+                                <div class="flex items-center gap-2 text-xs"><span
+                                        class="w-2 h-2 rounded-full bg-green-400 inline-block"></span><span
+                                        class="text-gray-400">Happy 16%</span></div>
+                                <div class="flex items-center gap-2 text-xs"><span
+                                        class="w-2 h-2 rounded-full bg-orange-400 inline-block"></span><span
+                                        class="text-gray-400">Stressed 10%</span></div>
+                                <div class="flex items-center gap-2 text-xs"><span
+                                        class="w-2 h-2 rounded-full bg-gray-500 inline-block"></span><span
+                                        class="text-gray-400">Neutral 6%</span></div>
+                            </div>
+                        </div>
+
+                        <div class="col-span-2 glass-panel rounded-3xl p-6">
+                            <h2 class="font-display text-sm text-gray-300 uppercase tracking-widest mb-5">Weekly
+                                Patterns</h2>
+                            <div class="h-44">
+                                <canvas id="weeklyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Companion Notification -->
+    <div class="fixed top-6 right-6 z-50 glass-panel rounded-2xl p-4 max-w-xs border border-neoncyan/20 shadow-lg shadow-neoncyan/5 animate-slide"
+        style="animation-delay:0.3s">
+        <div class="flex items-start gap-3">
+            <div
+                class="w-8 h-8 rounded-full bg-neoncyan/10 border border-neoncyan/30 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-sparkles text-neoncyan text-xs"></i>
+            </div>
+            <div>
+                <p class="text-xs font-medium text-white">Pattern Detected</p>
+                <p class="text-xs text-gray-400 mt-0.5 leading-relaxed">You're 40% more focused on Tuesdays. Consider
+                    scheduling important work then.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Trend Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Focused',
+                        data: [72, 85, 78, 90, 88, 65, 92],
+                        borderColor: '#00f0ff',
+                        backgroundColor: 'rgba(0,240,255,0.08)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#00f0ff',
+                        pointRadius: 3,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Relaxed',
+                        data: [55, 48, 62, 45, 50, 80, 60],
+                        borderColor: '#a78bfa',
+                        backgroundColor: 'rgba(167,139,250,0.05)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#a78bfa',
+                        pointRadius: 3,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Stressed',
+                        data: [20, 15, 30, 12, 25, 10, 8],
+                        borderColor: '#fb923c',
+                        backgroundColor: 'rgba(251,146,60,0.05)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fb923c',
+                        pointRadius: 3,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#94a3b8', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 } },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b', font: { size: 11 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b', font: { size: 11 } }, min: 0, max: 100 }
+                }
+            }
+        });
+
+        // Donut Chart
+        const donutCtx = document.getElementById('donutChart').getContext('2d');
+        new Chart(donutCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [47, 21, 16, 10, 6],
+                    backgroundColor: ['#00f0ff', '#a78bfa', '#4ade80', '#fb923c', '#64748b'],
+                    borderWidth: 0,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', bodyColor: '#94a3b8', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 } }
+            }
+        });
+
+        // Weekly Chart
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        new Chart(weeklyCtx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'Wellbeing', data: [78, 85, 74, 90, 82, 70, 88], backgroundColor: 'rgba(0,240,255,0.3)', borderRadius: 6 },
+                    { label: 'Stress', data: [22, 15, 26, 10, 18, 10, 12], backgroundColor: 'rgba(251,146,60,0.3)', borderRadius: 6 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#94a3b8', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 } },
+                scales: {
+                    x: { stacked: false, grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b', font: { size: 11 } }, min: 0, max: 100 }
+                }
+            }
+        });
+
+        // Heatmap generation
+        const hm = document.getElementById('heatmap');
+        const heatData = [0, 1, 2, 3, 4, 5, 3, 2, 4, 5, 5, 3, 1, 0, 0, 2, 4, 5, 4, 3, 2, 1, 0, 3, 5, 4, 3, 2, 1, 2];
+        heatData.forEach((v, i) => {
+            const cell = document.createElement('div');
+            cell.className = `heat-cell heat-${v}`;
+            cell.title = `Day ${i + 1}: Mood level ${v}`;
+            hm.appendChild(cell);
+        });
+    </script>
+</body>
+
+</html>

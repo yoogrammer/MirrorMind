@@ -1,0 +1,56 @@
+{
+  "name": "mirrormind-vscode",
+  "displayName": "MirrorMind",
+  "description": "MirrorMind AI OS Companion for VS Code",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mirrormind.start",
+        "title": "Start MirrorMind Companion"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "mirrormind-sidebar",
+          "title": "MirrorMind",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "mirrormind-sidebar": [
+        {
+          "type": "webview",
+          "id": "mirrormind.webview",
+          "name": "Cognitive Support"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-fetch": "^2.6.11",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.0.0"
+  }
+}

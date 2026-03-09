@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MirrorMind — Zen Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --cyan: #00f0ff;
+            --purple: #bd00ff;
+            --amber: #ffb800;
+        }
+
+        body {
+            background: #060810;
+            font-family: 'Outfit', sans-serif;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Ambient background */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .bg-orb-1 {
+            width: 60vw;
+            height: 60vh;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(ellipse, rgba(0, 240, 255, 0.06) 0%, transparent 70%);
+            animation: breathe 8s ease-in-out infinite;
+        }
+
+        .bg-orb-2 {
+            width: 40vw;
+            height: 40vh;
+            top: 20%;
+            left: 20%;
+            background: radial-gradient(ellipse, rgba(189, 0, 255, 0.05) 0%, transparent 70%);
+            animation: breathe 11s ease-in-out infinite reverse;
+        }
+
+        .bg-orb-3 {
+            width: 30vw;
+            height: 30vh;
+            bottom: 15%;
+            right: 15%;
+            background: radial-gradient(ellipse, rgba(0, 240, 255, 0.04) 0%, transparent 70%);
+            animation: breathe 14s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        /* Central Avatar */
+        .zen-avatar-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .zen-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid;
+            animation: ring-pulse 4s ease-in-out infinite;
+        }
+
+        .zen-ring-1 {
+            width: 180px;
+            height: 180px;
+            border-color: rgba(0, 240, 255, 0.3);
+            animation-delay: 0s;
+        }
+
+        .zen-ring-2 {
+            width: 240px;
+            height: 240px;
+            border-color: rgba(0, 240, 255, 0.15);
+            animation-delay: 0.8s;
+        }
+
+        .zen-ring-3 {
+            width: 300px;
+            height: 300px;
+            border-color: rgba(0, 240, 255, 0.08);
+            animation-delay: 1.6s;
+        }
+
+        .zen-ring-4 {
+            width: 360px;
+            height: 360px;
+            border-color: rgba(189, 0, 255, 0.06);
+            animation-delay: 2.4s;
+        }
+
+        @keyframes ring-pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.04);
+                opacity: 1;
+            }
+        }
+
+        .zen-core {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at 40% 35%, rgba(0, 240, 255, 0.25), rgba(189, 0, 255, 0.15), rgba(0, 0, 0, 0.5));
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.2), 0 0 80px rgba(0, 240, 255, 0.1), inset 0 0 30px rgba(0, 240, 255, 0.05);
+            animation: core-glow 4s ease-in-out infinite;
+            position: relative;
+            z-index: 5;
+        }
+
+        @keyframes core-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 40px rgba(0, 240, 255, 0.2), 0 0 80px rgba(0, 240, 255, 0.1), inset 0 0 30px rgba(0, 240, 255, 0.05);
+            }
+
+            50% {
+                box-shadow: 0 0 60px rgba(0, 240, 255, 0.4), 0 0 120px rgba(0, 240, 255, 0.2), inset 0 0 40px rgba(0, 240, 255, 0.1);
+            }
+        }
+
+        .zen-eye {
+            font-size: 2.5rem;
+            color: var(--cyan);
+            filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.7));
+            animation: eye-blink 8s ease-in-out infinite;
+        }
+
+        @keyframes eye-blink {
+
+            0%,
+            48%,
+            52%,
+            100% {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+
+            50% {
+                opacity: 0.3;
+                transform: scaleY(0.15);
+            }
+        }
+
+        /* Text elements */
+        .zen-title {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 8px;
+        }
+
+        .zen-message {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.85);
+            text-align: center;
+            max-width: 480px;
+            line-height: 1.5;
+        }
+
+        .zen-sub {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.1em;
+            margin-top: 6px;
+        }
+
+        /* Breathing guide */
+        .breath-guide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-top: 32px;
+        }
+
+        .breath-ring {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(0, 240, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: breath-expand 7s ease-in-out infinite;
+            position: relative;
+        }
+
+        .breath-ring::after {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border-radius: 50%;
+            background: rgba(0, 240, 255, 0.08);
+            animation: breath-expand 7s ease-in-out infinite;
+        }
+
+        @keyframes breath-expand {
+
+            0%,
+            100% {
+                transform: scale(1);
+                border-color: rgba(0, 240, 255, 0.3);
+            }
+
+            45% {
+                transform: scale(1.4);
+                border-color: rgba(0, 240, 255, 0.6);
+            }
+        }
+
+        .breath-label {
+            font-size: 0.7rem;
+            color: rgba(0, 240, 255, 0.5);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            animation: breath-text 7s ease-in-out infinite;
+        }
+
+        @keyframes breath-text {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                content: 'BREATHE IN';
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        #breath-text {
+            transition: opacity 1s;
+        }
+
+        /* Audio Controls */
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 32px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 99px;
+            backdrop-filter: blur(20px);
+        }
+
+        .audio-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .audio-btn.primary {
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: var(--cyan);
+        }
+
+        .audio-btn.primary:hover {
+            background: rgba(0, 240, 255, 0.25);
+        }
+
+        .audio-track {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.05em;
+        }
+
+        .audio-track strong {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+
+        /* Wave bars */
+        .wave-visual {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 20px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            background: var(--cyan);
+            border-radius: 3px;
+            opacity: 0.5;
+            animation: wave 1.2s ease-in-out infinite;
+        }
+
+        .wave-bar:nth-child(1) {
+            animation-delay: 0s;
+            height: 40%;
+        }
+
+        .wave-bar:nth-child(2) {
+            animation-delay: 0.1s;
+            height: 80%;
+        }
+
+        .wave-bar:nth-child(3) {
+            animation-delay: 0.2s;
+            height: 100%;
+        }
+
+        .wave-bar:nth-child(4) {
+            animation-delay: 0.3s;
+            height: 60%;
+        }
+
+        .wave-bar:nth-child(5) {
+            animation-delay: 0.4s;
+            height: 40%;
+        }
+
+        .wave-bar:nth-child(6) {
+            animation-delay: 0.5s;
+            height: 70%;
+        }
+
+        @keyframes wave {
+
+            0%,
+            100% {
+                transform: scaleY(1);
+            }
+
+            50% {
+                transform: scaleY(0.4);
+            }
+        }
+
+        /* Exit & Stats */
+        .zen-exit {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .zen-btn {
+            padding: 8px 16px;
+            border-radius: 99px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .zen-btn:hover {
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Emotion badge */
+        .emotion-badge {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 99px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            background: rgba(0, 240, 255, 0.05);
+            backdrop-filter: blur(10px);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .emotion-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* Timer */
+        .timer {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.15em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ambient Orbs -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- Emotion Badge -->
+    <div class="emotion-badge">
+        <div class="dot"></div>
+        <span>Detecting: <strong style="color:#00f0ff">Calm</strong> · 91%</span>
+    </div>
+
+    <!-- Exit Buttons -->
+    <div class="zen-exit">
+        <a href="index.html" class="zen-btn"><i class="fa-solid fa-compress"></i> Exit Zen</a>
+        <a href="settings.html" class="zen-btn"><i class="fa-solid fa-sliders"></i> Settings</a>
+    </div>
+
+    <!-- Main Zen Content -->
+    <div style="display:flex; flex-direction:column; align-items:center; z-index:10; position:relative;">
+
+        <div class="zen-title">MirrorMind · Zen Mode</div>
+
+        <div class="zen-avatar-wrapper">
+            <div class="zen-ring zen-ring-4"></div>
+            <div class="zen-ring zen-ring-3"></div>
+            <div class="zen-ring zen-ring-2"></div>
+            <div class="zen-ring zen-ring-1"></div>
+            <div class="zen-core">
+                <i class="fa-solid fa-eye zen-eye"></i>
+            </div>
+        </div>
+
+        <div class="zen-message" id="zen-message">
+            You are calm. Your mind is clear.<br>Rest in this moment.
+        </div>
+        <div class="zen-sub">AI companion · Active observation</div>
+
+        <!-- Breathing Guide -->
+        <div class="breath-guide">
+            <div class="breath-ring"></div>
+            <div class="breath-label" id="breath-text">BREATHE IN</div>
+        </div>
+
+        <!-- Audio Controls -->
+        <div class="audio-controls">
+            <div class="wave-visual">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+            <div class="audio-track"><strong>Ocean Alpha Waves</strong><br>432Hz · Meditation</div>
+            <button class="audio-btn"><i class="fa-solid fa-backward-step"></i></button>
+            <button class="audio-btn primary"><i class="fa-solid fa-pause"></i></button>
+            <button class="audio-btn"><i class="fa-solid fa-forward-step"></i></button>
+            <button class="audio-btn"><i class="fa-solid fa-shuffle"></i></button>
+        </div>
+
+        <div class="timer" id="zen-timer">Zen session · 0:00</div>
+    </div>
+
+    <script>
+        // Breathing cycle
+        const phases = ['BREATHE IN', 'HOLD', 'BREATHE OUT', 'HOLD'];
+        const durations = [4, 2, 4, 2]; // seconds
+        let phaseIdx = 0, elapsed = 0;
+        const breathEl = document.getElementById('breath-text');
+        function nextPhase() {
+            phaseIdx = (phaseIdx + 1) % phases.length;
+            breathEl.textContent = phases[phaseIdx];
+            setTimeout(nextPhase, durations[phaseIdx] * 1000);
+        }
+        setTimeout(nextPhase, durations[0] * 1000);
+
+        // Rotating messages
+        const messages = [
+            'You are calm. Your mind is clear.<br>Rest in this moment.',
+            'Each breath resets your system.<br>Notice the stillness.',
+            'Your focus is your superpower.<br>Let the noise fade away.',
+            'You are doing great.<br>Kindness begins within.',
+            'This pause is productive.<br>Recovery is part of performance.'
+        ];
+        let msgIdx = 0;
+        const msgEl = document.getElementById('zen-message');
+        setInterval(() => {
+            msgIdx = (msgIdx + 1) % messages.length;
+            msgEl.style.opacity = 0;
+            setTimeout(() => { msgEl.innerHTML = messages[msgIdx]; msgEl.style.opacity = 1; }, 800);
+        }, 12000);
+        msgEl.style.transition = 'opacity 0.8s';
+
+        // Timer
+        let seconds = 0;
+        const timerEl = document.getElementById('zen-timer');
+        setInterval(() => {
+            seconds++;
+            const m = Math.floor(seconds / 60), s = seconds % 60;
+            timerEl.textContent = `Zen session · ${m}:${String(s).padStart(2, '0')}`;
+        }, 1000);
+    </script>
+</body>
+
+</html>

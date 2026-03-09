@@ -1,0 +1,145 @@
+/* MirrorMind Custom Styles */
+
+/* Glassmorphism Utilities */
+.glass-panel {
+    background: rgba(21, 26, 36, 0.4);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Animations */
+@keyframes pulse-slow {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes pulse-slower {
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: scale(1) translate(0, 0);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(1.1) translate(-20px, 20px);
+    }
+}
+
+.pulse-slow {
+    animation: pulse-slow 8s ease-in-out infinite;
+}
+
+.pulse-slower {
+    animation: pulse-slower 12s ease-in-out infinite;
+}
+
+/* Scanner Grid Overlay */
+.scanner-grid {
+    background-image:
+        linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* Custom Scrollbar for Suggestions */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Chart Canvas Fix for Flexbox */
+#moodChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Navigation link styles */
+.nav-link {
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.2s;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #00f0ff;
+}
+
+.nav-link.active {
+    color: #00f0ff;
+}
+
+/* AI Companion Notification bounce-in */
+@keyframes notif-in {
+    0% {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+
+    80% {
+        transform: translateX(-4px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.notif-enter {
+    animation: notif-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Glow text utility */
+.glow-cyan {
+    text-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+    color: #00f0ff;
+}
+
+.glow-purple {
+    text-shadow: 0 0 16px rgba(189, 0, 255, 0.6);
+    color: #bd00ff;
+}
+
+/* Chart canvas universal sizing */
+canvas {
+    max-width: 100%;
+}
+
+/* Select element appearance fix */
+select option {
+    background: #151a24;
+    color: white;
+}
